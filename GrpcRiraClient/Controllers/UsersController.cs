@@ -14,31 +14,49 @@ namespace GrpcRiraClient.Controllers
     public class UsersController : ControllerBase
     {
         private readonly GrpcRiraClientService _userClient;
-        public UsersController(GrpcRiraClientService userClient)
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(GrpcRiraClientService userClient, ILogger<UsersController> logger)
         {
             _userClient = userClient;
+            _logger = logger;
         }
         // GET: api/<UsersController>
         [HttpGet]
         public async Task<IEnumerable<Models.User>> Get()
         {
-            var results = await _userClient.GetUsersAsync();
-            var users = results.Users.Select(u => new Models.User(u)).ToArray();
-            return users;
+            try
+            {
+                var results = await _userClient.GetUsersAsync();
+                var users = results.Users.Select(u => new Models.User(u)).ToArray();
+                return users;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on GetUsersAsync");
+                throw;
+            }
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public async Task<Models.User?> Get(string id)
         {
-            var response = await _userClient.FindUserAsync(new Protos.UserIdentifier() { Id = id });
-            if (response == null)
+            try
             {
-                Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return null;
+                var response = await _userClient.FindUserAsync(new Protos.UserIdentifier() { Id = id });
+                if (response == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return null;
+                }
+                var result = new Models.User(response);
+                return result;
             }
-            var result = new Models.User(response);
-            return result;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error on GetUserAsync [ {id}]");
+                throw;
+            }
         }
 
         // POST api/<UsersController>
@@ -57,15 +75,23 @@ namespace GrpcRiraClient.Controllers
                 NationalCode = value.NationalCode,
                 Birthday = value.Birthday.ToUniversalTime().ToTimestamp(),
             };
-            var response = await _userClient.CreateUserAsync(request);
-            if (response == null)
+            try
             {
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return null;
-            }
+                var response = await _userClient.CreateUserAsync(request);
+                if (response == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    return null;
+                }
 
-            var result = new Models.User(response);
-            return result;
+                var result = new Models.User(response);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error on CreateUser");
+                throw;
+            }
         }
 
         // PUT api/<UsersController>/5
@@ -87,9 +113,17 @@ namespace GrpcRiraClient.Controllers
                 Birthday = value.Birthday.ToUniversalTime().ToTimestamp(),
             };
 
-            var response = await _userClient.UpdateUserAsync(request);
-            var result = new Models.User(response);
-            return result;
+            try
+            {
+                var response = await _userClient.UpdateUserAsync(request);
+                var result = new Models.User(response);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error on Update user [{request.Id}]");
+                throw;
+            }
         }
 
         // DELETE api/<UsersController>/5
@@ -102,19 +136,27 @@ namespace GrpcRiraClient.Controllers
                 return null;
             }
 
-            var response = await _userClient.DeleteUserAsync(new UserIdentifier() { Id = id });
-            if (response == null)
+            try
             {
-                Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return null;
+                var response = await _userClient.DeleteUserAsync(new UserIdentifier() { Id = id });
+                if (response == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return null;
+                }
+
+                var result = new Models.User()
+                {
+                    Id = response.Id,
+                };
+
+                return result;
             }
-
-            var result = new Models.User()
+            catch (Exception ex)
             {
-                Id = response.Id,
-            };
-
-            return result;
+                _logger.LogError(ex, $"Error on DeleteUser [{id}]");
+                throw;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GrpcRiraClient.Services;
+using Serilog;
 
 namespace GrpcRiraClient
 {
@@ -15,6 +16,18 @@ namespace GrpcRiraClient
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.UseUserClient(builder.Configuration);
+
+            Log.Logger = new LoggerConfiguration()
+               .WriteTo.File("Serilogs.log")
+               .CreateLogger();
+
+            builder.Host.UseSerilog((context, loggerConfiguration) =>
+            {
+                loggerConfiguration.WriteTo.File("SeriLogs.log");
+                loggerConfiguration.MinimumLevel.Information()
+                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                    .Enrich.FromLogContext();
+            });
 
             var app = builder.Build();
 

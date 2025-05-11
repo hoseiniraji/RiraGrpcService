@@ -2,6 +2,7 @@
 
 using GrpcRiraServer.Data;
 using GrpcRiraServer.Services;
+using Serilog;
 
 namespace GrpcRiraServer
 {
@@ -14,6 +15,17 @@ namespace GrpcRiraServer
             builder.Services.UseInMemoryDb();
             // Add services to the container.
             builder.Services.AddGrpc();
+            Log.Logger = new LoggerConfiguration()
+             .WriteTo.File("Serilogs.log")
+             .CreateLogger();
+
+            builder.Host.UseSerilog((context, loggerConfiguration) =>
+            {
+                loggerConfiguration.WriteTo.File("SeriLogs.log");
+                loggerConfiguration.MinimumLevel.Information()
+                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                    .Enrich.FromLogContext();
+            });
 
             var app = builder.Build();
             //app.Services.InitializeDatabase();
