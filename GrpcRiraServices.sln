@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcRiraServer", "GrpcRiraServer\GrpcRiraServer.csproj", "{63A66E56-6729-4F0D-8E0B-72B120F080A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcRiraClient", "GrpcRiraClient\GrpcRiraClient.csproj", "{EEB33FEA-8D41-439E-842F-AA8E5C12C6E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{63A66E56-6729-4F0D-8E0B-72B120F080A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63A66E56-6729-4F0D-8E0B-72B120F080A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63A66E56-6729-4F0D-8E0B-72B120F080A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEB33FEA-8D41-439E-842F-AA8E5C12C6E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEB33FEA-8D41-439E-842F-AA8E5C12C6E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEB33FEA-8D41-439E-842F-AA8E5C12C6E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEB33FEA-8D41-439E-842F-AA8E5C12C6E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

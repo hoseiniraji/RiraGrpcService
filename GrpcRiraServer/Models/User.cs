@@ -34,7 +34,7 @@ namespace GrpcRiraServer.Models
                 FirstName = FirstName,
                 LastName = LastName,
                 NationalCode = NationalCode,
-                Birthday = Birthday.ToTimestamp(),
+                Birthday = Birthday.ToUniversalTime().ToTimestamp(),
             };
         }
     }
